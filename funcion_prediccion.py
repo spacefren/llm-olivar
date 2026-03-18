@@ -18,5 +18,5 @@ def calcular_prediccion_y_impacto(parcela_df):
     return {
         "pct_perdida_pred": pred_pct,
         "impacto_eur_ha": impacto_eur_ha,
-        "impacto_total_parcela_eur": impacto_total
+        "impacto_total_parcela_eur": impacto_total,
     }
