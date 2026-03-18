@@ -1,8 +1,17 @@
 import os
 import json
+from dotenv import load_dotenv
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Cargar variables de entorno (incluida OPENAI_API_KEY) desde .env
+load_dotenv()
+
+# Si no hay API key, esto fallará de forma explícita
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise RuntimeError("OPENAI_API_KEY no está definida. Ponla en .env o en el entorno.")
+
+client = OpenAI(api_key=api_key)
 
 input_procesador = """
 Eres un sistema que extrae datos estructurados sobre parcelas de olivar.
@@ -59,7 +68,7 @@ estado = {
     "rendimiento_esperado_kg_ha": None,
     "precio_mercado_eur_kg": None,
     "coste_variable_ha": None,
-    "duracion_encharcamiento_dias": None
+    "duracion_encharcamiento_dias": None,
 }
 
 historial = [
@@ -85,19 +94,54 @@ def actualizar_estado(respuesta_modelo, estado):
 def campos_faltantes(estado):
     return [k for k, v in estado.items() if v is None]
 
-def procesa_lenguaje_natural(input_usuario):
+def procesa_lenguaje_natural(input_usuario: str) -> str:
+    """
+    Usa el modelo para extraer/actualizar datos estructurados de la parcela
+    y devuelve un mensaje amigable indicando qué se ha rellenado y qué falta.
+    """
     global historial, estado
+
+    if not input_usuario or not input_usuario.strip():
+        return "Escribe algún dato sobre tu parcela para poder ayudarte."
 
     historial.append({"role": "user", "content": input_usuario})
 
     response = client.responses.create(
-        model = "gpt-4o-mini",
-        input = historial
+        model="gpt-4o-mini",
+        input=historial,
     )
 
-    faltantes = campos_faltantes(estado)
+    # El modelo devuelve SOLO un JSON con los campos mencionados.
+    try:
+        texto_modelo = response.output[0].content[0].text
+    except Exception:
+        return "He tenido un problema leyendo la respuesta del modelo."
+
+    # Actualizamos el estado global con los nuevos datos extraídos.
+    estado_actualizado = actualizar_estado(texto_modelo, estado)
+
+    faltantes = campos_faltantes(estado_actualizado)
+
+    # Construimos una respuesta de texto para el chat.
+    partes = []
+    partes.append("He actualizado los datos de tu parcela con lo que has indicado.")
+
+    # Campos que ya tienen valor
+    campos_rellenos = {k: v for k, v in estado_actualizado.items() if v is not None}
+    if campos_rellenos:
+        resumen = "\n".join(f"- {k}: {v}" for k, v in campos_rellenos.items())
+        partes.append("\nActualmente tengo estos datos:\n" + resumen)
+
     if not faltantes:
-        # Usa el modelo predictivo
-        return "Todo correcto"
+        partes.append(
+            "\nYa tengo todos los campos necesarios. "
+            "Puedes preguntar por el riesgo de pérdidas o el impacto económico."
+        )
     else:
-        return response.output[0].content[0].text
+        lista = "\n".join(f"- {nombre}" for nombre in faltantes)
+        partes.append(
+            "\nTodavía me faltan algunos datos. "
+            "Cuéntame, aunque sea de forma natural, esta información:\n" + lista
+        )
+
+    return "\n".join(partes)

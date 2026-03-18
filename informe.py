@@ -19,6 +19,7 @@ input_sistema = """
 Eres un asistente experto en olivar ante lluvias extremas. Se van a subir datos sobre una parcela de olivar.
 
 Datos de parcela y predicciones:
+parcel_id,zona_provincia,tipo_olivar,riego,superficie_ha,variedad,estado_fenologico,tipo_suelo,drenaje,pendiente_%,distancia_rio_m,altitud_m,rain_72h_mm,rain_7d_mm,temp_media_7d,humedad_suelo_%,profundidad_suelo_cm,materia_organica_%,rendimiento_esperado_kg_ha,precio_mercado_eur_kg,coste_variable_ha,duracion_encharcamiento_dias,pct_perdida_pred,impacto_eur_ha,impacto_total_parcela_eur
 """ + datos + """
 
 Contexto documental:

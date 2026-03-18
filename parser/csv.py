@@ -23,3 +23,33 @@ def leer_fila_csv(fila_numero: int = 0) -> str:
         print(f"Error al leer '{archivo_csv}': {e}")
     
     return ""
+
+
+def leer_diez_filas() -> str:
+    """
+    Lee una fila completa de 'predicciones.csv' y devuelve su contenido como texto.
+
+    Args:
+        fila_numero (int): Número de fila a leer (0 es la primera fila).
+
+    Returns:
+        str: Contenido de la fila como un único texto separado por comas.
+    """
+    archivo_csv = "predicciones.csv"
+    filas_acumuladas = []
+    try:
+        with open(archivo_csv, newline='', encoding='utf-8') as f:
+            lector = csv.reader(f)
+            for i, fila in enumerate(lector):
+                if i < 10:
+                    filas_acumuladas.append(', '.join(fila))
+                else:
+                    break
+
+        return '\n'.join(filas_acumuladas)
+    except FileNotFoundError:
+        print(f"El archivo '{archivo_csv}' no existe.")
+    except Exception as e:
+        print(f"Error al leer '{archivo_csv}': {e}")
+    
+    return ""
