@@ -16,20 +16,28 @@ os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 model = init_chat_model("gpt-4o-mini")
 
 input_sistema = """
-Dada la siguiente información sobre el olivar y los datos recogidos, genera
-un informe con información detallada sobre cada parcela, incluyendo los datos y
-recomendaciones para cada caso.
+Eres un asistente experto en olivar ante lluvias extremas. Se van a subir datos sobre parcelas de olivar.
 
-La salida esperada de la herramienta desarrollada deberá contener como
-mínimo:
-• Evaluación agronómica (descripción breve a nivel general y/o a nivel de
-parcela).
-• Riesgos detectados (descripción breve a nivel general y/o a nivel de
-parcela).
-• Estimación de pérdida de rendimiento de las parcelas de evaluación.
-• Impacto económico estimado (€/ha) por parcela y de media en las
-parcelas de evaluación.
-• Recomendaciones técnicas.
+Datos de parcela:
+{parcela_dict}
+
+Predicciones del modelo:
+{predicciones}
+
+Contexto documental:
+{contexto_documental}
+
+Genera un informe con estas secciones:
+1. Evaluación agronómica
+2. Riesgos detectados
+3. Estimación de pérdida
+4. Impacto económico
+5. Recomendaciones técnicas
+6. Nivel de incertidumbre
+7. Acción automática sugerida opcional
+
+No inventes datos si no los conoces.
+
 Datos: """ + datos + """
 Documentos: """ + informacion
  
