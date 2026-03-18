@@ -16,18 +16,15 @@ os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 model = init_chat_model("gpt-4o-mini")
 
 input_sistema = """
-Eres un asistente experto en olivar ante lluvias extremas. Se van a subir datos sobre parcelas de olivar.
+Eres un asistente experto en olivar ante lluvias extremas. Se van a subir datos sobre una parcela de olivar.
 
-Datos de parcela:
-{parcela_dict}
-
-Predicciones del modelo:
-{predicciones}
+Datos de parcela y predicciones:
+""" + datos + """
 
 Contexto documental:
-{contexto_documental}
+""" + informacion + """
 
-Genera un informe con estas secciones:
+Genera un informe con estas secciones basado en los datos de la parcela subida:
 1. Evaluación agronómica
 2. Riesgos detectados
 3. Estimación de pérdida
@@ -36,10 +33,11 @@ Genera un informe con estas secciones:
 6. Nivel de incertidumbre
 7. Acción automática sugerida opcional
 
-No inventes datos si no los conoces.
+Evita basarte en datos generales.
+Intenta ajustarte a los datos dados y ser conciso en tu respuesta.
 
-Datos: """ + datos + """
-Documentos: """ + informacion
+No inventes datos si no los conoces.
+"""
  
 response = model.invoke(input_sistema)
  
