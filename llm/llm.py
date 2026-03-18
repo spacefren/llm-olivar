@@ -1,21 +1,21 @@
-from dotenv import load_dotenv
 import os
+import json
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 input_procesador = """
-Eres un LLM diseñado para predecir pérdidas asociadas al olivar en casos de inundación.
+Eres un sistema que extrae datos estructurados sobre parcelas de olivar.
 
-Tu tarea consiste en traducir lenguaje natural introducido por el usuario a una serie de datos,
-para que sean usados después por un modelo predictivo.
+Devuelve SIEMPRE un JSON válido.
+- Solo incluye los campos que el usuario mencione.
+- No inventes datos.
+- No expliques nada.
 
 Los datos a recoger son los siguientes:
 - parcel_id: es el identificador único para cada registro.
-- zona_provincia: indica la provincia andaluza donde se encuentra la
-parcela.
-- tipo_olivar: nos permite deducir que tipo de sistema de plantación tiene
-la parcela.
+- zona_provincia: indica la provincia andaluza donde se encuentra la parcela.
+- tipo_olivar: nos permite deducir que tipo de sistema de plantación tiene la parcela.
 - riego: indica si la parcela es de Riego o Secano.
 - superficie_ha: Extensión de la parcela en hectáreas.
 - variedad: diferentes variedades como Picual, Arbequina, Cornicabra...
@@ -35,13 +35,69 @@ la parcela.
 - precio_mercado_eur_kg: precio del kg de aceituna.
 - coste_variabe_ha: gastos operativos y tiempos de ejecución de tareas.
 - duracion_encharcamiento_dias: tiempo que la parcela se encuentra encharcada en días.
-
-El input del usuario es el siguiente:
-
 """
 
-def process_natural_language(input_usuario):
+estado = {
+    "parcel_id": None,
+    "zona_provincia": None,
+    "tipo_olivar": None,
+    "riego": None,
+    "superficie_ha": None,
+    "variedad": None,
+    "estado_fenologico": None,
+    "tipo_suelo": None,
+    "drenaje": None,
+    "profundidad_suelo_cm": None,
+    "materia_organica_%": None,
+    "pendiente_%": None,
+    "distancia_rio_m": None,
+    "altitud_m": None,
+    "rain_72h_mm": None,
+    "rain_7d_mm": None,
+    "temp_media_7d": None,
+    "humedad_suelo_%": None,
+    "rendimiento_esperado_kg_ha": None,
+    "precio_mercado_eur_kg": None,
+    "coste_variable_ha": None,
+    "duracion_encharcamiento_dias": None
+}
+
+historial = [
+    {
+        "role": "system",
+        "content": input_procesador
+    }
+]
+
+def actualizar_estado(respuesta_modelo, estado):
+    try:
+        nuevos_datos = json.loads(respuesta_modelo)
+
+        for clave, valor in nuevos_datos.items():
+            if valor is not None:
+                estado[clave] = valor
+
+    except:
+        print("Error parseando JSON")
+
+    return estado
+
+def campos_faltantes(estado):
+    return [k for k, v in estado.items() if v is None]
+
+def procesa_lenguaje_natural(input_usuario):
+    global historial, estado
+
+    historial.append({"role": "user", "content": input_usuario})
+
     response = client.responses.create(
         model = "gpt-4o-mini",
-        input = input_procesador + input_usuario
+        input = historial
     )
+
+    faltantes = campos_faltantes(estado)
+    if not faltantes:
+        # Usa el modelo predictivo
+        return "Todo correcto"
+    else:
+        return response.output[0].content[0].text
