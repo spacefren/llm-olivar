@@ -16,7 +16,7 @@ os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 model = init_chat_model("gpt-4o-mini")
 
 input_sistema = """
-Dados la siguiente información sobre el olivar y los datos recogidos, genera
+Dada la siguiente información sobre el olivar y los datos recogidos, genera
 un informe con información detallada sobre cada parcela, incluyendo los datos y
 recomendaciones para cada caso.
 
