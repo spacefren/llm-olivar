@@ -1,7 +1,13 @@
 <script>
-fetch("/api/saludo")
-  .then(res => res.json())
-  .then(data => {
-    console.log(data.mensaje);
-  });
+fetch("http://localhost:5000/api/mensaje", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    mensaje: "Hola backend"
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data));
 </script>
