@@ -1,4 +1,5 @@
 import joblib
+import pandas as pd
 
 pipeline = joblib.load("xgb_pipeline_olivar.joblib")
 
