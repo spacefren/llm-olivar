@@ -1,0 +1,21 @@
+BASE DOCUMENTAL
+
+
+| Nº | Archivo adjunto | Fuente |
+|---|---|---|
+| 1 | agronomy-09-00785-v2.pdf | MDPI / Agronomy |
+| 2 | sustainability-13-07983-v4.pdf | MDPI / Sustainability |
+| 3 | agronomy-11-00812.pdf | MDPI / Agronomy |
+| 4 | 1-s2.0-S016719870800086X-main.pdf | Elsevier / Soil & Tillage Research |
+| 5 | 2-16.-Soil-loss-in-an-olive-grove-in-central-spain-under-cover-crops-and-tillage-treatments-and-farmer-perceptions-WEB.pdf | Documento técnico / copia web del artículo |
+| 6 | horticulturae-10-00623.pdf | MDPI / Horticulturae |
+
+| 7 | Recomendaciones para olivar y otros frutales de clima mediterráneo frente a episodios de fuertes lluvias | IFAPA / Junta de Andalucía |
+| 8 | Sostenibilidad de la Producción de Olivar en Andalucía | Junta de Andalucía |
+| 9 | Manual de Producción Integrada en Olivar en Andalucía | IFAPA / Junta de Andalucía |
+| 10 | Suelo, Riego, Nutrición y Medio Ambiente del Olivar | Junta de Andalucía |
+| 11 | Soil management effects on runoff, erosion and soil properties in an olive grove of Southern Spain | Elsevier / Soil & Tillage Research |
+| 12 | A Comparative Analysis of Soil Loss Tolerance and Application in Olive Groves | MDPI / Agronomy |
+| 13 | Long-term changes in rainfed olive production, rainfall and farmer’s income in Bailén (Jaén, Spain) | Universidad de Granada / Digibug |
+| 14| Capacidad de las cubiertas vegetales para mitigar y adaptar el cambio climático en olivares semiáridos | Universidad de Córdoba / Helvia |
+| 15 | Análisis económico de la erosión de suelos agrarios en el olivar del Alto Genil granadino | Universidad de Córdoba / Helvia |
