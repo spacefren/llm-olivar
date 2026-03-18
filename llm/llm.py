@@ -2,6 +2,9 @@ import os
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
+import pandas as pd
+
+from funcion_prediccion import calcular_prediccion_y_impacto
 
 # Cargar variables de entorno (incluida OPENAI_API_KEY) desde .env
 load_dotenv()
@@ -133,10 +136,29 @@ def procesa_lenguaje_natural(input_usuario: str) -> str:
         partes.append("\nActualmente tengo estos datos:\n" + resumen)
 
     if not faltantes:
-        partes.append(
-            "\nYa tengo todos los campos necesarios. "
-            "Puedes preguntar por el riesgo de pérdidas o el impacto económico."
-        )
+        # Todos los datos están completos: construimos el dataframe esperado
+        parcela_df = pd.DataFrame([estado_actualizado])
+
+        try:
+            resultado = calcular_prediccion_y_impacto(parcela_df)
+            pct = resultado.get("pct_perdida_pred", 0.0) * 100
+            impacto_ha = resultado.get("impacto_eur_ha", 0.0)
+            impacto_total = resultado.get("impacto_total_parcela_eur", 0.0)
+
+            partes.append(
+                "\n✅ Ya tengo todos los datos necesarios. "
+                "He calculado la predicción de pérdidas para tu parcela."
+            )
+            partes.append(
+                f"\nPredicción de pérdida de producción: ~{pct:.1f} %"
+                f"\nImpacto estimado por hectárea: {impacto_ha:,.0f} € / ha"
+                f"\nImpacto económico total estimado: {impacto_total:,.0f} €"
+            )
+        except Exception as e:
+            partes.append(
+                "\nHe podido completar todos los datos, pero ha fallado la llamada "
+                f"al modelo predictivo: {e}"
+            )
     else:
         lista = "\n".join(f"- {nombre}" for nombre in faltantes)
         partes.append(
